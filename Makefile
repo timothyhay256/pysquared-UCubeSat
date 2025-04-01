@@ -33,7 +33,7 @@ endif
 	@$(UV) run coverage xml --rcfile=pyproject.toml > /dev/null
 
 .PHONY: clean
-clean: ## Remove all gitignored files such as downloaded libraries and artifacts
+clean: ## Remove all gitignored files
 	git clean -dfX
 
 ##@ Build

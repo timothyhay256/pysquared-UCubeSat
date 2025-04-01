@@ -136,7 +136,7 @@ wheels = [
 
 [[package]]
 name = "adafruit-circuitpython-register"
-version = "1.10.1"
+version = "1.10.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "adafruit-blinka" },
@@ -144,9 +144,9 @@ dependencies = [
     { name = "adafruit-circuitpython-typing" },
     { name = "typing-extensions" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/25/cb/2058f3564f9e31f9394803628930c1f57453fd939197986e3a425b18c1f4/adafruit_circuitpython_register-1.10.1.tar.gz", hash = "sha256:452aeedd515fb26405b100291bfc69df639d82dfac02087367508566123490a3", size = 32706 }
+sdist = { url = "https://files.pythonhosted.org/packages/70/d5/62e353c8e946afd0de0719161fc3155525d3f63683bf9af78f84062e881e/adafruit_circuitpython_register-1.10.2.tar.gz", hash = "sha256:68e1899351b186f007b26326d01e4c5ed68187b50c059e1e414b53248f80053d", size = 32737 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/71/f9/7942ae05ff5b2e1fa380db618ac632926c42c0565ec71d178ce9f5a60f3c/adafruit_circuitpython_register-1.10.1-py3-none-any.whl", hash = "sha256:872b0da50a4fe18464d1125002194fddf2fa8627f11650e90547e519c7f846d8", size = 14977 },
+    { url = "https://files.pythonhosted.org/packages/8b/20/8a5c2fde67638309082a78a928076c6f56ede9b83fa1724069d1817a4872/adafruit_circuitpython_register-1.10.2-py3-none-any.whl", hash = "sha256:2c4fc4261895b669994b9eebb7972a8e31dc0f6971a3847fbbbaa899f0c668eb", size = 14978 },
 ]
 
 [[package]]
@@ -179,7 +179,7 @@ wheels = [
 [[package]]
 name = "adafruit-circuitpython-tca9548a"
 version = "0.0.0+auto.0"
-source = { git = "https://github.com/proveskit/Adafruit_CircuitPython_TCA9548A#5655387780a13f4e21cf814198ed21399bc75d77" }
+source = { git = "https://github.com/proveskit/Adafruit_CircuitPython_TCA9548A?rev=1.0.0#5655387780a13f4e21cf814198ed21399bc75d77" }
 dependencies = [
     { name = "adafruit-blinka" },
     { name = "adafruit-circuitpython-busdevice" },
@@ -421,6 +421,11 @@ dependencies = [
 ]
 
 [[package]]
+name = "proves-circuitpython-sx126"
+version = "2.0.0"
+source = { git = "https://github.com/proveskit/micropySX126X?rev=1.0.0#247e623588b6c7b4a273c5b5aa9d35fc1b1d2f80" }
+
+[[package]]
 name = "pyftdi"
 version = "0.56.0"
 source = { registry = "https://pypi.org/simple" }
@@ -462,6 +467,7 @@ dependencies = [
     { name = "coverage" },
     { name = "pre-commit" },
     { name = "proves-circuitpython-rv3028" },
+    { name = "proves-circuitpython-sx126" },
     { name = "pytest" },
 ]
 
@@ -473,9 +479,9 @@ requires-dist = [
     { name = "adafruit-circuitpython-lsm6ds", specifier = "==4.5.13" },
     { name = "adafruit-circuitpython-mcp9808", specifier = "==3.3.24" },
     { name = "adafruit-circuitpython-neopixel", specifier = "==6.3.12" },
-    { name = "adafruit-circuitpython-register", specifier = "==1.10.1" },
+    { name = "adafruit-circuitpython-register", specifier = "==1.10.2" },
     { name = "adafruit-circuitpython-rfm", specifier = "==1.0.3" },
-    { name = "adafruit-circuitpython-tca9548a", git = "https://github.com/proveskit/Adafruit_CircuitPython_TCA9548A" },
+    { name = "adafruit-circuitpython-tca9548a", git = "https://github.com/proveskit/Adafruit_CircuitPython_TCA9548A?rev=1.0.0" },
     { name = "adafruit-circuitpython-ticks", specifier = "==1.1.1" },
     { name = "adafruit-circuitpython-typing", specifier = "==1.11.2" },
     { name = "adafruit-circuitpython-veml7700", specifier = "==2.0.2" },
@@ -483,6 +489,7 @@ requires-dist = [
     { name = "coverage", specifier = "==7.6.10" },
     { name = "pre-commit", specifier = "==4.0.1" },
     { name = "proves-circuitpython-rv3028", git = "https://github.com/proveskit/PROVES_CircuitPython_RV3028?rev=1.0.0" },
+    { name = "proves-circuitpython-sx126", git = "https://github.com/proveskit/micropySX126X?rev=1.0.0" },
     { name = "pytest", specifier = "==8.3.2" },
 ]
 

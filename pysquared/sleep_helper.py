@@ -2,10 +2,10 @@ import gc
 import time
 
 import alarm
-import digitalio
 
 from .logger import Logger
-from .pysquared import Satellite
+from .satellite import Satellite
+from .watchdog import Watchdog
 
 try:
     from typing import Literal
@@ -20,7 +20,7 @@ class SleepHelper:
     Class responsible for sleeping the Satellite to conserve power
     """
 
-    def __init__(self, cubesat: Satellite, logger: Logger):
+    def __init__(self, cubesat: Satellite, logger: Logger, watchdog: Watchdog) -> None:
         """
         Creates a SleepHelper object.
 
@@ -30,6 +30,7 @@ class SleepHelper:
         """
         self.cubesat: Satellite = cubesat
         self.logger: Logger = logger
+        self.watchdog: Watchdog = watchdog
 
     def safe_sleep(self, duration: int = 15) -> None:
         """
@@ -54,7 +55,7 @@ class SleepHelper:
             duration -= 15
             iterations += 1
 
-            self.cubesat.watchdog_pet()
+            self.watchdog.pet()
 
     def short_hibernate(self) -> Literal[True]:
         """Puts the Satellite to sleep for 120 seconds"""
@@ -63,21 +64,9 @@ class SleepHelper:
         gc.collect()
         # all should be off from cubesat powermode
 
-        # checking the type of self.cubesat.enable_rf, as it can be a DigitalInOut object or a bool.
-        if isinstance(self.cubesat.enable_rf, digitalio.DigitalInOut):
-            self.cubesat.enable_rf.value = False
-        else:
-            self.cubesat.enable_rf = False
-
         self.cubesat.f_softboot.toggle(True)
-        self.cubesat.watchdog_pet()
+        self.watchdog.pet()
         self.safe_sleep(120)
-
-        # checking the type of self.cubesat.enable_rf, as it can be a DigitalInOut object or a bool.
-        if isinstance(self.cubesat.enable_rf, digitalio.DigitalInOut):
-            self.cubesat.enable_rf.value = True
-        else:
-            self.cubesat.enable_rf = True
 
         return True
 
@@ -88,20 +77,8 @@ class SleepHelper:
         gc.collect()
         # all should be off from cubesat powermode
 
-        # checking the type of self.cubesat.enable_rf, as it can be a DigitalInOut object or a bool.
-        if isinstance(self.cubesat.enable_rf, digitalio.DigitalInOut):
-            self.cubesat.enable_rf.value = False
-        else:
-            self.cubesat.enable_rf = False
-
         self.cubesat.f_softboot.toggle(True)
-        self.cubesat.watchdog_pet()
+        self.watchdog.pet()
         self.safe_sleep(600)
-
-        # checking the type of self.cubesat.enable_rf, as it can be a DigitalInOut object or a bool.
-        if isinstance(self.cubesat.enable_rf, digitalio.DigitalInOut):
-            self.cubesat.enable_rf.value = True
-        else:
-            self.cubesat.enable_rf = True
 
         return True
