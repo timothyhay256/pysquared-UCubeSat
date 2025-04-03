@@ -72,13 +72,17 @@ class BaseRadioManager(RadioProto):
                 )
                 payload = bytes(str(data), "UTF-8")
 
+            license_bytes = bytes(self._radio_config.license, "UTF-8")
+            payload = b" ".join([license_bytes, payload, license_bytes])
+
             sent = self._send_internal(payload)
-            self._log.info(
-                "Radio message sent",
-                success=bool(sent),
-                len=len(payload),
-            )
-            return bool(sent)
+
+            if not sent:
+                self._log.error("Radio send failed")
+                return False
+
+            self._log.info("Radio message sent")
+            return True
         except Exception as e:
             self._log.error("Error sending radio message", e)
             return False

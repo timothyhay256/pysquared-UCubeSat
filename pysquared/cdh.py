@@ -1,6 +1,8 @@
 import random
 import time
 
+import microcontroller
+
 from .config.config import Config
 from .hardware.radio.modulation import RadioModulation
 from .logger import Logger
@@ -43,7 +45,7 @@ class CommandDataHandler:
         self._repeat_code: bytes = config.repeat_code.encode("utf-8")
         self._log.info(
             "The satellite has a super secret code!",
-            super_secret_code=self._super_secret_code,
+            super_secret_code=str(self._super_secret_code),
         )
 
     ############### message handler ###############
@@ -111,8 +113,8 @@ class CommandDataHandler:
         self._log.info("Resetting")
         try:
             self._radio.send(data=b"resetting")
-            cubesat.micro.on_next_reset(cubesat.micro.RunMode.NORMAL)
-            cubesat.micro.reset()
+            microcontroller.on_next_reset(microcontroller.RunMode.NORMAL)
+            microcontroller.reset()
         except Exception:
             pass
 

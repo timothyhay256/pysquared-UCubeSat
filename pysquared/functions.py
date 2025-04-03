@@ -9,6 +9,8 @@ import gc
 import random
 import time
 
+import microcontroller
+
 from .cdh import CommandDataHandler
 from .config.config import Config
 from .logger import Logger
@@ -22,7 +24,7 @@ from .sleep_helper import SleepHelper
 from .watchdog import Watchdog
 
 try:
-    from typing import List, OrderedDict, Union
+    from typing import List, OrderedDict
 except Exception:
     pass
 
@@ -63,7 +65,6 @@ class functions:
         self.jokes: list[str] = config.jokes
         self.last_battery_temp: float = config.last_battery_temp
         self.sleep_duration: int = config.sleep_duration
-        self.state_of_health_part1: bool = False
 
     """
     Satellite Management Functions
@@ -83,21 +84,6 @@ class functions:
     """
     Radio Functions
     """
-
-    def send(self, msg: Union[str, bytearray]) -> None:
-        """Calls the radio to send a message. Currently only sends with default settings.
-
-        Args:
-            msg (String,Byte Array): Pass the String or Byte Array to be sent.
-        """
-        message: str = (
-            f"{self.config.radio.license} " + str(msg) + f" {self.config.radio.license}"
-        )
-        self.radio.send(message)
-        if self.cubesat.is_licensed:
-            self.logger.debug("Sent Packet", packet_message=message)
-        else:
-            self.logger.warning("Failed to send packet")
 
     def beacon(self) -> None:
         """Calls the radio to send a beacon."""
@@ -150,7 +136,7 @@ class functions:
                 f"IC:{self.cubesat.charge_current}",
                 f"UT:{self.cubesat.get_system_uptime}",
                 f"BN:{self.cubesat.boot_count.get()}",
-                f"MT:{self.cubesat.micro.cpu.temperature}",
+                f"MT:{microcontroller.cpu.temperature}",
                 f"RT:{self.radio.get_temperature()}",
                 f"AT:{self.imu.get_temperature()}",
                 f"BT:{self.last_battery_temp}",
@@ -162,23 +148,7 @@ class functions:
         except Exception as e:
             self.logger.error("Couldn't aquire data for the state of health: ", e)
 
-        message: str = ""
-        if not self.state_of_health_part1:
-            message = (
-                f"{self.config.radio.license} Yearling^2 State of Health 1/2"
-                + str(self.state_list)
-                + f"{self.config.radio.license}"
-            )
-            self.state_of_health_part1: bool = True
-        else:
-            message = (
-                f"{self.config.radio.license} YSOH 2/2"
-                + self.format_state_of_health(self.cubesat.hardware)
-                + f"{self.config.radio.license}"
-            )
-            self.state_of_health_part1: bool = False
-
-        self.radio.send(message)
+        self.radio.send("State of Health " + str(self.state_list))
 
     def send_face(self) -> None:
         """Calls the data transmit function from the radio manager class"""

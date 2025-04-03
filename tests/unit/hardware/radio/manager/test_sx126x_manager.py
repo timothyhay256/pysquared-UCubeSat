@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 import pytest
 
@@ -284,6 +284,7 @@ def initialized_manager(
 def test_send_success_bytes(
     initialized_manager: SX126xManager,
     mock_logger: MagicMock,
+    mock_radio_config: RadioConfig,
 ):
     """Test successful sending of bytes."""
     data_bytes = b"Hello SX126x"
@@ -293,18 +294,20 @@ def test_send_success_bytes(
     initialized_manager._radio.send.return_value = (len(data_bytes), ERR_NONE)
 
     assert initialized_manager.send(data_bytes)
-    mock_logger.info.assert_called_once_with(
-        "Radio message sent", success=True, len=len(data_bytes)
-    )
+
+    mock_logger.info.assert_called_once_with("Radio message sent")
 
 
 def test_send_success_string(
     initialized_manager: SX126xManager,
     mock_logger: MagicMock,
+    mock_radio_config: RadioConfig,
 ):
     """Test successful sending of a string (should be converted to bytes)."""
     data_str = "Hello Saidi"
-    expected_bytes = bytes(data_str, "UTF-8")
+    expected_bytes = bytes(
+        f"{mock_radio_config.license} {data_str} {mock_radio_config.license}", "UTF-8"
+    )
 
     initialized_manager._radio = MagicMock(spec=SX1262)
     initialized_manager._radio.send = MagicMock()
@@ -312,9 +315,7 @@ def test_send_success_string(
 
     assert initialized_manager.send(data_str)
     initialized_manager._radio.send.assert_called_once_with(expected_bytes)
-    mock_logger.info.assert_called_once_with(
-        "Radio message sent", success=True, len=len(expected_bytes)
-    )
+    mock_logger.info.assert_called_once_with("Radio message sent")
 
 
 def test_send_unlicensed(
@@ -353,25 +354,29 @@ def test_send_unlicensed(
 def test_send_radio_error(
     initialized_manager: SX126xManager,
     mock_logger: MagicMock,
+    mock_radio_config: RadioConfig,
 ):
     """Test handling of error code returned by radio.send()."""
     initialized_manager._radio = MagicMock(spec=SX1262)
     initialized_manager._radio.send = MagicMock()
     initialized_manager._radio.send.return_value = (0, -1)
 
-    assert not initialized_manager.send(b"test")
+    msg = b"test"
+    assert not initialized_manager.send(msg)
 
-    initialized_manager._radio.send.assert_called_once_with(b"test")
+    license_bytes = bytes(mock_radio_config.license, "UTF-8")
+    expected_bytes = b" ".join([license_bytes, msg, license_bytes])
+    initialized_manager._radio.send.assert_called_once_with(expected_bytes)
 
-    mock_logger.error.assert_called_once_with("Radio send failed with error code: -1")
-    # TODO(nateinaction): Prevent this message from being logged on send failure
-    # Base class logs the info message regardless of internal success/failure
-    mock_logger.info.assert_called_once_with("Radio message sent", success=False, len=4)
+    mock_logger.error.assert_has_calls(
+        [call("Radio send failed with error code: -1"), call("Radio send failed")]
+    )
 
 
 def test_send_exception(
     initialized_manager: SX126xManager,
     mock_logger: MagicMock,
+    mock_radio_config: RadioConfig,
 ):
     """Test handling of exception during radio.send()."""
     initialized_manager._radio = MagicMock(spec=SX1262)
@@ -380,9 +385,12 @@ def test_send_exception(
     send_error = Exception("Send error")
     initialized_manager._radio.send.side_effect = send_error
 
-    assert not initialized_manager.send(b"test")
+    msg = b"test"
+    assert not initialized_manager.send(msg)
 
-    initialized_manager._radio.send.assert_called_once_with(b"test")
+    license_bytes = bytes(mock_radio_config.license, "UTF-8")
+    expected_bytes = b" ".join([license_bytes, msg, license_bytes])
+    initialized_manager._radio.send.assert_called_once_with(expected_bytes)
     mock_logger.error.assert_called_once_with("Error sending radio message", send_error)
 
 
