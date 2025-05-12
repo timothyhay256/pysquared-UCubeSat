@@ -43,6 +43,9 @@ class Config:
         self.super_secret_code: str = json_data["super_secret_code"]
         self.repeat_code: str = json_data["repeat_code"]
         self.joke_reply: list[str] = json_data["joke_reply"]
+        self.longest_allowable_sleep_time: int = json_data[
+            "longest_allowable_sleep_time"
+        ]
 
         self.CONFIG_SCHEMA = {
             "cubesat_name": {"type": str, "min_length": 1, "max_length": 10},
