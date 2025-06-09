@@ -110,12 +110,13 @@ class BaseRadioManager(RadioProto):
                 current=current_modulation,
             )
 
-    def modify_config(self, radio_config: RadioConfig) -> None:
-        """Modify the radio configuration. This will apply the new configuration and reinitialize the radio.
+    def modify_config(self, key: str, value) -> None:
+        """Modify a specific radio configuration parameter.
 
         Must be implemented by subclasses.
 
-        :param RadioConfig radio_config: The new radio configuration to apply.
+        :param str key: The configuration parameter key to modify.
+        :param value: The new value to set for the parameter.
         :raises NotImplementedError: If not implemented by subclass.
         """
         raise NotImplementedError
@@ -152,6 +153,15 @@ class BaseRadioManager(RadioProto):
         Must be implemented by subclasses.
 
         :return: The current modulation mode of the hardware.
+        :raises NotImplementedError: If not implemented by subclass.
+        :raises Exception: If querying the hardware fails.
+        """
+        raise NotImplementedError
+
+    def get_rssi(self) -> float:
+        """Get the RSSI of the last received packet.
+
+        :return: The RSSI of the last received packet.
         :raises NotImplementedError: If not implemented by subclass.
         :raises Exception: If querying the hardware fails.
         """
