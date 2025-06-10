@@ -5,7 +5,6 @@ from digitalio import DigitalInOut
 
 from ....config.radio import FSKConfig, LORAConfig, RadioConfig
 from ....logger import Logger
-from ....nvm.flag import Flag
 from ....protos.temperature_sensor import TemperatureSensorProto
 from ..modulation import FSK, LoRa, RadioModulation
 from .base import BaseRadioManager
@@ -32,7 +31,6 @@ class RFM9xManager(BaseRadioManager, TemperatureSensorProto):
         self,
         logger: Logger,
         radio_config: RadioConfig,
-        use_fsk: Flag,
         spi: SPI,
         chip_select: DigitalInOut,
         reset: DigitalInOut,
@@ -55,7 +53,6 @@ class RFM9xManager(BaseRadioManager, TemperatureSensorProto):
         super().__init__(
             logger=logger,
             radio_config=radio_config,
-            use_fsk=use_fsk,
         )
 
     def _initialize_radio(self, modulation: Type[RadioModulation]) -> None:
@@ -140,7 +137,7 @@ class RFM9xManager(BaseRadioManager, TemperatureSensorProto):
         else:
             raise ValueError(f"Unknown parameter key: {key}")
 
-    def get_modulation(self) -> Type[FSK] | Type[LoRa]:
+    def get_modulation(self) -> Type[RadioModulation]:
         """Get the modulation mode from the initialized RFM9x radio."""
         return FSK if self._radio.__class__.__name__ == "RFM9xFSK" else LoRa
 
