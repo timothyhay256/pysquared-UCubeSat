@@ -31,6 +31,7 @@ dev = [
     "pre-commit==4.2.0",
     "pyright[nodejs]==1.1.402",
     "pytest==8.4.1",
+    "mkdocs-material==9.6.14",
 ]
 
 [tool.setuptools]
@@ -74,9 +75,6 @@ show_missing = true
 skip_covered = false
 include = [
     "pysquared/**/*.py",
-]
-omit = [
-    "pysquared/repl/**",
 ]
 
 [tool.coverage.html]
