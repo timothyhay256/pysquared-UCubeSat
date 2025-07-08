@@ -114,7 +114,10 @@ define compile_mpy
 endef
 
 .PHONY: docs
+docs: uv
+	@$(UV) run mkdocs build
+	@$(UV) run mkdocs serve
 
-docs:
-	cd pysquared && ../tools/uv-0.7.13/uv run mkdocs build
-	cd pysquared && ../tools/uv-0.7.13/uv run mkdocs serve
+.PHONY: docs-deploy
+docs-deploy: uv
+	@$(UV) run mkdocs gh-deploy --config-file mkdocs.yaml --force
