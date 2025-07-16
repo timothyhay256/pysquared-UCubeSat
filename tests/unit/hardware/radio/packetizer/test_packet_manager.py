@@ -1,3 +1,11 @@
+"""Unit tests for the PacketManager class.
+
+This module contains unit tests for the `PacketManager` class, which handles
+packetization, sending, and receiving of data over a radio. The tests cover
+initialization, data packing, sending, listening for data, and acknowledgment
+mechanisms.
+"""
+
 import random
 from unittest.mock import MagicMock, patch
 
@@ -11,11 +19,16 @@ from pysquared.protos.radio import RadioProto
 
 @pytest.fixture
 def mock_logger() -> MagicMock:
+    """Mocks the Logger class."""
     return MagicMock(spec=Logger)
 
 
 @pytest.fixture
 def mock_radio() -> MagicMock:
+    """Mocks the RadioProto class.
+
+    Sets a default max packet size and RSSI value for testing.
+    """
     radio = MagicMock(spec=RadioProto)
     radio.get_max_packet_size.return_value = 100  # Mock packet size for tests
     radio.get_rssi.return_value = -70  # Mock RSSI value
@@ -24,13 +37,19 @@ def mock_radio() -> MagicMock:
 
 @pytest.fixture
 def mock_message_counter() -> MagicMock:
+    """Mocks the Counter class"""
     counter = MagicMock(spec=Counter)
     counter.get.return_value = 1
     return counter
 
 
 def test_packet_manager_init(mock_logger, mock_radio, mock_message_counter):
-    """Test PacketManager initialization."""
+    """Tests PacketManager initialization.
+
+    Args:
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+    """
     license_str = "TEST_LICENSE"
 
     packet_manager = PacketManager(
@@ -47,7 +66,13 @@ def test_packet_manager_init(mock_logger, mock_radio, mock_message_counter):
 
 
 def test_pack_data_single_packet(mock_logger, mock_radio, mock_message_counter):
-    """Test packing data that fits in a single packet."""
+    """Tests packing data that fits in a single packet.
+
+    Args:
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     license_str = "TEST"
     packet_manager = PacketManager(
         mock_logger, mock_radio, license_str, mock_message_counter
@@ -77,7 +102,13 @@ def test_pack_data_single_packet(mock_logger, mock_radio, mock_message_counter):
 
 
 def test_pack_data_multiple_packets(mock_logger, mock_radio, mock_message_counter):
-    """Test packing data that requires multiple packets."""
+    """Tests packing data that requires multiple packets.
+
+    Args:
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     license_str = "TEST"
     packet_manager = PacketManager(
         mock_logger, mock_radio, license_str, mock_message_counter
@@ -111,7 +142,14 @@ def test_pack_data_multiple_packets(mock_logger, mock_radio, mock_message_counte
 
 @patch("time.sleep")
 def test_send_success(mock_sleep, mock_logger, mock_radio, mock_message_counter):
-    """Test successful execution of send method."""
+    """Tests successful execution of send method.
+
+    Args:
+        mock_sleep: Mocked time.sleep function.
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     license_str = "TEST"
 
     packet_manager = PacketManager(
@@ -144,7 +182,14 @@ def test_send_success(mock_sleep, mock_logger, mock_radio, mock_message_counter)
 def test_send_success_multipacket(
     mock_sleep, mock_logger, mock_radio, mock_message_counter
 ):
-    """Test successful execution of send method."""
+    """Tests successful execution of send method with multiple packets.
+
+    Args:
+        mock_sleep: Mocked time.sleep function.
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     license_str = "TEST"
 
     packet_manager = PacketManager(
@@ -175,7 +220,13 @@ def test_send_success_multipacket(
 
 
 def test_send_unlicensed(mock_logger, mock_radio, mock_message_counter):
-    """Test unlicensed execution of send method."""
+    """Tests unlicensed execution of send method.
+
+    Args:
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     license_str = ""
 
     packet_manager = PacketManager(
@@ -191,7 +242,14 @@ def test_send_unlicensed(mock_logger, mock_radio, mock_message_counter):
 
 @patch("time.time")
 def test_unpack_data(mock_time, mock_logger, mock_radio, mock_message_counter):
-    """Test unpacking data from received packets."""
+    """Tests unpacking data from received packets.
+
+    Args:
+        mock_time: Mocked time.time function.
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     packet_manager = PacketManager(mock_logger, mock_radio, "", mock_message_counter)
 
     # Create test packets with proper headers
@@ -230,7 +288,14 @@ def test_unpack_data(mock_time, mock_logger, mock_radio, mock_message_counter):
 
 @patch("time.time")
 def test_receive_success(mock_time, mock_logger, mock_radio, mock_message_counter):
-    """Test successfully receiving all packets."""
+    """Tests successfully receiving all packets.
+
+    Args:
+        mock_time: Mocked time.time function.
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     packet_manager = PacketManager(mock_logger, mock_radio, "", mock_message_counter)
 
     # Set up mock time to control the flow
@@ -276,7 +341,14 @@ def test_receive_success(mock_time, mock_logger, mock_radio, mock_message_counte
 
 @patch("time.time")
 def test_receive_timeout(mock_time, mock_logger, mock_radio, mock_message_counter):
-    """Test timeout during reception."""
+    """Tests timeout during reception.
+
+    Args:
+        mock_time: Mocked time.time function.
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     packet_manager = PacketManager(mock_logger, mock_radio, "", mock_message_counter)
 
     # Set up mock time to simulate timeout
@@ -301,7 +373,13 @@ def test_receive_timeout(mock_time, mock_logger, mock_radio, mock_message_counte
 
 
 def test_get_header_and_payload(mock_logger, mock_radio, mock_message_counter):
-    """Test _get_header and _get_payload helper methods."""
+    """Tests _get_header and _get_payload helper methods.
+
+    Args:
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     packet_manager = PacketManager(mock_logger, mock_radio, "", mock_message_counter)
 
     # Create a test packet
@@ -332,7 +410,13 @@ def test_get_header_and_payload(mock_logger, mock_radio, mock_message_counter):
 
 
 def test_send_acknowledgement(mock_logger, mock_radio, mock_message_counter):
-    """Test sending acknowledgment packet."""
+    """Tests sending acknowledgment packet.
+
+    Args:
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     packet_manager = PacketManager(
         mock_logger, mock_radio, "TEST", mock_message_counter
     )
@@ -348,7 +432,13 @@ def test_send_acknowledgement(mock_logger, mock_radio, mock_message_counter):
 
 
 def test_get_packet_identifier(mock_logger, mock_radio, mock_message_counter):
-    """Test _get_packet_identifier helper method."""
+    """Test _get_packet_identifier helper method.
+
+    Args:
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     packet_manager = PacketManager(mock_logger, mock_radio, "", mock_message_counter)
 
     # Call the _get_packet_identifier method
@@ -365,7 +455,14 @@ def test_get_packet_identifier(mock_logger, mock_radio, mock_message_counter):
 def test_listen_ignores_mismatched_packet_ids(
     mock_time, mock_logger, mock_radio, mock_message_counter
 ):
-    """Test that listen ignores packets with mismatched packet identifiers."""
+    """Test that listen ignores packets with mismatched packet identifiers.
+
+    Args:
+        mock_time: Mocked time.time function.
+        mock_logger: Mocked Logger instance.
+        mock_radio: Mocked RadioProto instance.
+        mock_message_counter: Mocked Counter instance.
+    """
     packet_manager = PacketManager(mock_logger, mock_radio, "", mock_message_counter)
 
     # Set up mock time to control the flow
