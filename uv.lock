@@ -1,5 +1,5 @@
 version = 1
-revision = 3
+revision = 2
 requires-python = ">=3.13"
 
 [manifest]
@@ -8,6 +8,7 @@ members = [
     "pysquared-flight-software",
     "pysquared-flight-software-mocks",
     "pysquared-flight-software-unit-tests",
+    "pysquared-ground-station",
 ]
 
 [[package]]
@@ -214,7 +215,7 @@ wheels = [
 [[package]]
 name = "adafruit-circuitpython-tca9548a"
 version = "0.0.0+auto.0"
-source = { git = "https://github.com/proveskit/Adafruit_CircuitPython_TCA9548A?rev=1.0.0#5655387780a13f4e21cf814198ed21399bc75d77" }
+source = { git = "https://github.com/proveskit/Adafruit_CircuitPython_TCA9548A?rev=1.1.0#977e6bac209f3ffa1bd6c60aa3d180a253dde97e" }
 dependencies = [
     { name = "adafruit-blinka" },
     { name = "adafruit-circuitpython-busdevice" },
@@ -1021,6 +1022,7 @@ dependencies = [
     { name = "pysquared-flight-software" },
     { name = "pysquared-flight-software-mocks" },
     { name = "pysquared-flight-software-unit-tests" },
+    { name = "pysquared-ground-station" },
 ]
 
 [package.dev-dependencies]
@@ -1035,9 +1037,10 @@ docs = [
 
 [package.metadata]
 requires-dist = [
-    { name = "pysquared-flight-software", editable = "circuitpython-workspaces/flight-software" },
-    { name = "pysquared-flight-software-mocks", editable = "cpython-workspaces/flight-software-mocks" },
-    { name = "pysquared-flight-software-unit-tests", editable = "cpython-workspaces/flight-software-unit-tests" },
+    { name = "pysquared-flight-software", virtual = "circuitpython-workspaces/flight-software" },
+    { name = "pysquared-flight-software-mocks", virtual = "cpython-workspaces/flight-software-mocks" },
+    { name = "pysquared-flight-software-unit-tests", virtual = "cpython-workspaces/flight-software-unit-tests" },
+    { name = "pysquared-ground-station", virtual = "circuitpython-workspaces/ground-station" },
 ]
 
 [package.metadata.requires-dev]
@@ -1053,7 +1056,7 @@ docs = [
 [[package]]
 name = "pysquared-flight-software"
 version = "2.0.0"
-source = { editable = "circuitpython-workspaces/flight-software" }
+source = { virtual = "circuitpython-workspaces/flight-software" }
 dependencies = [
     { name = "adafruit-circuitpython-asyncio" },
     { name = "adafruit-circuitpython-drv2605" },
@@ -1084,7 +1087,7 @@ requires-dist = [
     { name = "adafruit-circuitpython-neopixel", specifier = "==6.3.12" },
     { name = "adafruit-circuitpython-register", specifier = "==1.10.4" },
     { name = "adafruit-circuitpython-rfm", specifier = "==1.0.6" },
-    { name = "adafruit-circuitpython-tca9548a", git = "https://github.com/proveskit/Adafruit_CircuitPython_TCA9548A?rev=1.0.0" },
+    { name = "adafruit-circuitpython-tca9548a", git = "https://github.com/proveskit/Adafruit_CircuitPython_TCA9548A?rev=1.1.0" },
     { name = "adafruit-circuitpython-ticks", specifier = "==1.1.1" },
     { name = "adafruit-circuitpython-veml7700", specifier = "==2.1.4" },
     { name = "proves-circuitpython-sx126", git = "https://github.com/proveskit/micropySX126X?rev=1.0.0" },
@@ -1094,7 +1097,7 @@ requires-dist = [
 [[package]]
 name = "pysquared-flight-software-mocks"
 version = "2.0.0"
-source = { editable = "cpython-workspaces/flight-software-mocks" }
+source = { virtual = "cpython-workspaces/flight-software-mocks" }
 dependencies = [
     { name = "adafruit-circuitpython-typing" },
 ]
@@ -1105,7 +1108,7 @@ requires-dist = [{ name = "adafruit-circuitpython-typing", specifier = "==1.12.1
 [[package]]
 name = "pysquared-flight-software-unit-tests"
 version = "2.0.0"
-source = { editable = "cpython-workspaces/flight-software-unit-tests" }
+source = { virtual = "cpython-workspaces/flight-software-unit-tests" }
 dependencies = [
     { name = "coverage" },
     { name = "freezegun" },
@@ -1124,10 +1127,21 @@ requires-dist = [
     { name = "hypothesis", specifier = "==6.136.7" },
     { name = "pre-commit", specifier = "==4.2.0" },
     { name = "pyright", extras = ["nodejs"], specifier = "==1.1.404" },
-    { name = "pysquared-flight-software", editable = "circuitpython-workspaces/flight-software" },
-    { name = "pysquared-flight-software-mocks", editable = "cpython-workspaces/flight-software-mocks" },
+    { name = "pysquared-flight-software", virtual = "circuitpython-workspaces/flight-software" },
+    { name = "pysquared-flight-software-mocks", virtual = "cpython-workspaces/flight-software-mocks" },
     { name = "pytest", specifier = "==8.4.1" },
 ]
+
+[[package]]
+name = "pysquared-ground-station"
+version = "2.0.0"
+source = { virtual = "circuitpython-workspaces/ground-station" }
+dependencies = [
+    { name = "pysquared-flight-software" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pysquared-flight-software", virtual = "circuitpython-workspaces/flight-software" }]
 
 [[package]]
 name = "pytest"
