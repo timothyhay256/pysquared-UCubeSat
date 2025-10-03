@@ -42,6 +42,12 @@ test: .venv ## Run tests
 clean: ## Remove all gitignored files
 	git clean -dfX
 
+.PHONY: mount
+mount: ## Mount the board/device at ./rpi
+	@mkdir -p ./rpi
+	@echo "Mounting device $(DEVICE) to ./rpi..."
+	sudo mount -t vfat -o uid=$$(id -u),gid=$$(id -g),umask=022 $(DEVICE) ./rpi
+
 ##@ Build Tools
 TOOLS_DIR ?= tools
 $(TOOLS_DIR):
